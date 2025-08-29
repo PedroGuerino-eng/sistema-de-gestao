@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Fornecedores{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Fornecedores</h2>
+<div class="mb-3 d-flex justify-content-between align-items-center">
+  <form method="GET" action="{{ url_for('main.fornecedores') }}" class="d-flex">
+    <input type="text" name="search_query" class="form-control me-2" placeholder="Pesquisar fornecedor..." value="{{ search_query or '' }}">
+    <button type="submit" class="btn btn-outline-primary">Buscar</button>
+    {% if search_query %}
+      <a href="{{ url_for('main.fornecedores') }}" class="btn btn-outline-secondary ms-2">Limpar</a>
+    {% endif %}
+  </form>
+  <a href="{{ url_for('main.novo_fornecedor') }}" class="btn btn-primary">Adicionar Fornecedor</a>
+</div>
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for fornecedor in fornecedores %}
+      <tr>
+        <td>{{ fornecedor.nome }}</td>
+        <td>{{ fornecedor.email }}</td>
+        <td>{{ fornecedor.telefone }}</td>
+        <td>
+          <a href="{{ url_for('main.editar_fornecedor', sid=fornecedor.id) }}" class="btn btn-sm btn-warning">Editar</a>
+          <form method="POST" action="{{ url_for('main.deletar_fornecedor', sid=fornecedor.id) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar este fornecedor?');">
+            <button type="submit" class="btn btn-sm btn-danger">Deletar</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

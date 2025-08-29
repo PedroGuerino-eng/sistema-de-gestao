@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}<div class="text-center mb-4">
+  <h1 class="fw-bold"><i class="bi bi-speedometer2"></i> Dashboard</h1>
+  <p class="text-muted">Visão geral</p></div><div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Clientes</h6>
+        <h3 class="fw-bold">{{ clientes_count }}</h3>
+        <a href="{{ url_for('main.clientes') }}" class="btn btn-sm btn-outline-primary mt-2">Ver clientes</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Produtos</h6>
+        <h3 class="fw-bold">{{ produtos_count }}</h3>
+        <a href="{{ url_for('main.produtos') }}" class="btn btn-sm btn-outline-primary mt-2">Ver produtos</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Usuários</h6>
+        <h3 class="fw-bold">{{ users_count }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Vendas</h6>
+        <h3 class="fw-bold text-success">{{ vendas_total|currency }}</h3>
+        <a href="{{ url_for('main.vendas') }}" class="btn btn-sm btn-outline-success mt-2">Ver vendas</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Fornecedores</h6>
+        <h3 class="fw-bold">{{ fornecedores_count }}</h3>
+        <a href="{{ url_for('main.fornecedores') }}" class="btn btn-sm btn-outline-info mt-2">Ver fornecedores</a>
+      </div>
+    </div>
+  </div></div><div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">Últimos clientes</h5>
+    <ul class="list-group">
+      {% for c in ultimos_clientes %}
+        <li class="list-group-item">{{ c.nome }} — {{ c.email or '-' }}</li>
+      {% else %}
+        <li class="list-group-item text-muted">Nenhum cliente cadastrado.</li>
+      {% endfor %}
+    </ul>
+  </div></div><div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">Últimos produtos</h5>
+    <ul class="list-group">
+      {% for p in ultimos_produtos %}
+        <li class="list-group-item">{{ p.nome }} — {{ p.preco|currency }}</li>
+      {% else %}
+        <li class="list-group-item text-muted">Nenhum produto cadastrado.</li>
+      {% endfor %}
+    </ul>
+  </div></div><div class="card shadow-sm">
+  <div class="card-body">
+    <h5 class="mb-3">Últimas vendas</h5>
+    <ul class="list-group">
+      {% for venda in ultimas_vendas %}
+        <li class="list-group-item">
+          Venda para {{ venda.cliente.nome }} ({{ venda.quantidade }}x {{ venda.produto.nome }})
+          <span class="float-end fw-bold">{{ venda.total|currency }}</span>
+        </li>
+      {% else %}
+        <li class="list-group-item text-muted">Nenhuma venda registrada.</li>
+      {% endfor %}
+    </ul>
+  </div></div>
+{% endblock %}

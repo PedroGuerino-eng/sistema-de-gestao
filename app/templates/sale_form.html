@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Nova Venda{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-4">Nova Venda</h2>
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        <label for="cliente_id" class="form-label">Cliente</label>
+        <select class="form-select" id="cliente_id" name="cliente_id" required>
+          <option value="" disabled selected>Selecione um cliente</option>
+          {% for cliente in clientes %}
+            <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="produto_id" class="form-label">Produto</label>
+        <select class="form-select" id="produto_id" name="produto_id" required>
+          <option value="" disabled selected>Selecione um produto</option>
+          {% for produto in produtos %}
+            <option value="{{ produto.id }}">{{ produto.nome }} (R$ {{ "%.2f"|format(produto.preco) }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="quantidade" class="form-label">Quantidade</label>
+        <input type="number" class="form-control" id="quantidade" name="quantidade" min="1" required>
+      </div>
+      <button class="btn btn-primary" type="submit">Registrar Venda</button>
+      <a href="{{ url_for('main.vendas') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

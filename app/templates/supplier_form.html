@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if fornecedor else 'Novo' }} Fornecedor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-4">{{ 'Editar' if fornecedor else 'Novo' }} Fornecedor</h2>
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        <label for="nome" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="nome" name="nome" value="{{ fornecedor.nome if fornecedor else '' }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ fornecedor.email if fornecedor else '' }}">
+      </div>
+      <div class="mb-3">
+        <label for="telefone" class="form-label">Telefone</label>
+        <input type="tel" class="form-control" id="telefone" name="telefone" value="{{ fornecedor.telefone if fornecedor else '' }}">
+      </div>
+      <div class="mb-3">
+        <label for="endereco" class="form-label">Endereço</label>
+        <textarea class="form-control" id="endereco" name="endereco" rows="3">{{ fornecedor.endereco if fornecedor else '' }}</textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Salvar</button>
+      <a href="{{ url_for('main.fornecedores') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

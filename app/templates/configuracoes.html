@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Configurações{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Configurações da Conta</h2>
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Mudar Senha</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('main.configuracoes') }}">
+                    {{ password_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ password_form.nova_senha.label(class="form-label") }}
+                        {{ password_form.nova_senha(class="form-control") }}
+                        {% for error in password_form.nova_senha.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ password_form.confirmar_senha.label(class="form-label") }}
+                        {{ password_form.confirmar_senha(class="form-control") }}
+                        {% for error in password_form.confirmar_senha.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {{ password_form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Mudar Email</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('main.configuracoes') }}">
+                    {{ email_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ email_form.email.label(class="form-label") }}
+                        {{ email_form.email(class="form-control", value=current_user.email) }}
+                        {% for error in email_form.email.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {{ email_form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Deletar Conta</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('main.configuracoes') }}">
+                    {{ delete_form.hidden_tag() }}
+                    <div class="mb-3 form-check">
+                        {{ delete_form.confirmar(class="form-check-input") }}
+                        {{ delete_form.confirmar.label(class="form-check-label text-danger") }}
+                        {% for error in delete_form.confirmar.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {{ delete_form.submit(class="btn btn-danger mt-3", onclick="return confirm('Tem certeza que deseja deletar sua conta? Esta ação é irreversível.');") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Relatórios{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Relatórios de Vendas e Gestão</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-secondary text-white">
+        <h4 class="mb-0">Filtro de Período</h4>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('main.relatorios') }}" class="d-flex align-items-end">
+            <div class="me-3">
+                <label for="start_date" class="form-label">Data de Início</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date or '' }}">
+            </div>
+            <div class="me-3">
+                <label for="end_date" class="form-label">Data de Fim</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date or '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Aplicar Filtro</button>
+            {% if start_date or end_date %}
+                <a href="{{ url_for('main.relatorios') }}" class="btn btn-outline-secondary ms-2">Limpar Filtro</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Vendas por Mês</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Mês</th>
+                            <th>Total de Vendas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venda in vendas_mensais %}
+                            <tr>
+                                <td>{{ venda.mes }}</td>
+                                <td>{{ venda.total_mes | currency }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Top 5 Produtos Mais Vendidos</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for produto in produtos_mais_vendidos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ produto.nome }}
+                            <span class="badge bg-success rounded-pill">{{ produto.total_quantidade }} unidades</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Top 5 Clientes por Gasto</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for cliente in clientes_top %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ cliente.nome }}
+                            <span class="badge bg-info rounded-pill">{{ cliente.total_gasto | currency }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
