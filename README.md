@@ -45,5 +45,6 @@ Certifique-se de ter o Python 3 instalado.
 
 ### 1. Clonar o Repositório
 ```bash
-git clone [https://github.com/PedroGuerino-eng/sistema-de-gestao.git](https://github.com/PedroGuerino-eng/sistema-de-gestao.git)
+git clone https://github.com/PedroGuerino-eng/sistema-de-gestao.git
 cd sistema-de-gestao
+
