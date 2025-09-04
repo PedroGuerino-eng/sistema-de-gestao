@@ -5,7 +5,7 @@ from .models import User, Client, Product, Sale, Supplier
 from sqlalchemy.sql import func
 from sqlalchemy import desc
 from datetime import datetime
-from .forms import ClientForm, ProductForm, ChangePasswordForm, ChangeEmailForm, DeleteAccountForm
+from .forms import ClientForm, ProductForm, ChangePasswordForm, ChangeEmailForm, DeleteAccountForm, SupplierForm
 from flask_wtf import FlaskForm
 
 main = Blueprint('main', __name__)
@@ -29,14 +29,14 @@ def dashboard():
     ultimas_vendas = Sale.query.order_by(Sale.created_at.desc()).limit(5).all()
     
     return render_template('dashboard.html', 
-                           clientes_count=clientes_count, 
-                           users_count=users_count,
-                           produtos_count=produtos_count,
-                           vendas_total=vendas_total, 
-                           ultimos_clientes=ultimos_clientes,
-                           ultimos_produtos=ultimos_produtos,
-                           ultimas_vendas=ultimas_vendas,
-                           fornecedores_count=fornecedores_count)
+                            clientes_count=clientes_count, 
+                            users_count=users_count,
+                            produtos_count=produtos_count,
+                            vendas_total=vendas_total, 
+                            ultimos_clientes=ultimos_clientes,
+                            ultimos_produtos=ultimos_produtos,
+                            ultimas_vendas=ultimas_vendas,
+                            fornecedores_count=fornecedores_count)
 
 # ---------- CLIENTES CRUD (AJUSTADO PARA PESQUISA) ----------
 @main.route('/clientes')
@@ -130,7 +130,11 @@ def editar_produto(pid):
     form.fornecedor.choices = [(s.id, s.nome) for s in Supplier.query.order_by(Supplier.nome).all()]
     
     if form.validate_on_submit():
-        form.populate_obj(produto)
+        produto.nome = form.nome.data
+        produto.preco = form.preco.data
+        produto.descricao = form.descricao.data
+        produto.estoque = form.estoque.data
+        produto.fornecedor_id = form.fornecedor.data
         db.session.commit()
         flash('Produto atualizado', 'success')
         return redirect(url_for('main.produtos'))
@@ -225,21 +229,14 @@ def fornecedores():
 @main.route('/fornecedores/novo', methods=['GET', 'POST'])
 @login_required
 def novo_fornecedor():
-    class SupplierForm(FlaskForm):
-        pass
-
     form = SupplierForm()
-    if request.method == 'POST':
-        nome = request.form.get('nome')
-        email = request.form.get('email')
-        telefone = request.form.get('telefone')
-        endereco = request.form.get('endereco')
-        
-        if not nome:
-            flash('Nome é obrigatório', 'warning')
-            return redirect(url_for('main.novo_fornecedor'))
-        
-        s = Supplier(nome=nome, email=email, telefone=telefone, endereco=endereco)
+    if form.validate_on_submit():
+        s = Supplier(
+            nome=form.nome.data,
+            email=form.email.data,
+            telefone=form.telefone.data,
+            endereco=form.endereco.data
+        )
         db.session.add(s)
         db.session.commit()
         flash('Fornecedor criado com sucesso', 'success')
@@ -251,15 +248,15 @@ def novo_fornecedor():
 @login_required
 def editar_fornecedor(sid):
     fornecedor = Supplier.query.get_or_404(sid)
-    if request.method == 'POST':
-        fornecedor.nome = request.form.get('nome') or fornecedor.nome
-        fornecedor.email = request.form.get('email') or fornecedor.email
-        fornecedor.telefone = request.form.get('telefone') or fornecedor.telefone
-        fornecedor.endereco = request.form.get('endereco') or fornecedor.endereco
+    form = SupplierForm(obj=fornecedor)
+    
+    if form.validate_on_submit():
+        form.populate_obj(fornecedor)
         db.session.commit()
         flash('Fornecedor atualizado', 'success')
         return redirect(url_for('main.fornecedores'))
-    return render_template('supplier_form.html', fornecedor=fornecedor)
+        
+    return render_template('supplier_form.html', fornecedor=fornecedor, form=form)
 
 @main.route('/fornecedores/deletar/<int:sid>', methods=['POST'])
 @login_required
@@ -303,11 +300,11 @@ def relatorios():
     ).join(Client).group_by(Client.nome).order_by(desc('total_gasto')).limit(5).all()
 
     return render_template('relatorios.html', 
-                           vendas_mensais=vendas_mensais,
-                           produtos_mais_vendidos=produtos_mais_vendidos,
-                           clientes_top=clientes_top,
-                           start_date=start_date,
-                           end_date=end_date)
+                            vendas_mensais=vendas_mensais,
+                            produtos_mais_vendidos=produtos_mais_vendidos,
+                            clientes_top=clientes_top,
+                            start_date=start_date,
+                            end_date=end_date)
 
 
 @main.route('/configuracoes', methods=['GET', 'POST'])
@@ -318,14 +315,12 @@ def configuracoes():
     delete_form = DeleteAccountForm()
     user = User.query.get(current_user.id)
     
-    # Processa o formulário de mudança de senha
     if password_form.validate_on_submit() and password_form.submit.data:
         user.set_password(password_form.nova_senha.data)
         db.session.commit()
         flash('Sua senha foi atualizada com sucesso!', 'success')
         return redirect(url_for('main.configuracoes'))
 
-    # Processa o formulário de mudança de email
     if email_form.validate_on_submit() and email_form.submit.data:
         if User.query.filter_by(email=email_form.email.data).first():
             flash('Este e-mail já está em uso.', 'danger')
@@ -335,7 +330,6 @@ def configuracoes():
             flash('Seu e-mail foi atualizado com sucesso!', 'success')
         return redirect(url_for('main.configuracoes'))
 
-    # Processa o formulário de exclusão de conta
     if delete_form.validate_on_submit() and delete_form.submit.data:
         if current_user.id == 1:
             flash('O usuário admin não pode ser deletado.', 'danger')

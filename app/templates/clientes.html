@@ -32,6 +32,7 @@
         <td>
           <a href="{{ url_for('main.editar_cliente', cid=cliente.id) }}" class="btn btn-sm btn-warning">Editar</a>
           <form method="POST" action="{{ url_for('main.deletar_cliente', cid=cliente.id) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-sm btn-danger">Deletar</button>
           </form>
         </td>

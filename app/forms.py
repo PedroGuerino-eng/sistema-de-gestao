@@ -17,6 +17,13 @@ class ProductForm(FlaskForm):
     descricao = TextAreaField('Descrição')
     submit = SubmitField('Salvar Produto')
     
+class SupplierForm(FlaskForm):
+    nome = StringField('Nome', validators=[DataRequired(), Length(min=2, max=120)])
+    email = StringField('Email', validators=[Optional(), Email()])
+    telefone = StringField('Telefone', validators=[Optional()])
+    endereco = TextAreaField('Endereço', validators=[Optional()])
+    submit = SubmitField('Salvar Fornecedor')
+    
 # --- NOVOS FORMULÁRIOS PARA A PÁGINA DE CONFIGURAÇÕES ---
 class ChangePasswordForm(FlaskForm):
     nova_senha = PasswordField('Nova Senha', validators=[DataRequired(), Length(min=6)])

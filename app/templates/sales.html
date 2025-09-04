@@ -3,37 +3,35 @@
 
 {% block content %}
 <h2 class="mb-4">Vendas</h2>
-<div class="mb-3">
-    <a href="{{ url_for('main.nova_venda') }}" class="btn btn-primary">Adicionar Venda</a>
-</div>
+<a href="{{ url_for('main.nova_venda') }}" class="btn btn-primary mb-3">Nova Venda</a>
+
 <table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Produto</th>
-            <th>Quantidade</th>
-            <th>Total</th>
-            <th>Data</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for venda in vendas %}
-            <tr>
-                <td>{{ venda.id }}</td>
-                <td>{{ venda.cliente.nome }}</td>
-                <td>{{ venda.produto.nome }}</td>
-                <td>{{ venda.quantidade }}</td>
-                <td>{{ venda.total | currency }}</td>
-                <td>{{ venda.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                <td>
-                    <form method="POST" action="{{ url_for('main.deletar_venda', sid=venda.id) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar esta venda?');">
-                        <button type="submit" class="btn btn-sm btn-danger">Deletar</button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
+  <thead>
+    <tr>
+      <th>Cliente</th>
+      <th>Produto</th>
+      <th>Quantidade</th>
+      <th>Total</th>
+      <th>Data</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for venda in vendas %}
+      <tr>
+        <td>{{ venda.cliente.nome }}</td>
+        <td>{{ venda.produto.nome }}</td>
+        <td>{{ venda.quantidade }}</td>
+        <td>{{ venda.total|currency }}</td>
+        <td>{{ venda.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('main.deletar_venda', sid=venda.id) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar esta venda?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm btn-danger">Deletar</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}

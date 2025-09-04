@@ -20,7 +20,6 @@
       <th>Nome</th>
       <th>Preço</th>
       <th>Estoque</th>
-      <th>Fornecedor</th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -28,12 +27,12 @@
     {% for produto in produtos %}
       <tr>
         <td>{{ produto.nome }}</td>
-        <td>{{ produto.preco | currency }}</td>
+        <td>{{ produto.preco|currency }}</td>
         <td>{{ produto.estoque }}</td>
-        <td>{{ produto.fornecedor.nome if produto.fornecedor else 'N/A' }}</td>
         <td>
           <a href="{{ url_for('main.editar_produto', pid=produto.id) }}" class="btn btn-sm btn-warning">Editar</a>
           <form method="POST" action="{{ url_for('main.deletar_produto', pid=produto.id) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar este produto?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-sm btn-danger">Deletar</button>
           </form>
         </td>
